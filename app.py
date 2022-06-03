@@ -1,13 +1,15 @@
 from flask import Flask, request
 import telegram
+
 from joshu.credentials import BOT_TOKEN, BOT_USER_NAME, URL
+from joshu.notion import add_thought_to_inbox
 
 bot = telegram.Bot(token=BOT_TOKEN)
 
 app = Flask(__name__)
 
 @app.route('/{}'.format(BOT_TOKEN), methods=["POST"])
-def responde():
+def response():
     # retrieve the message in JSON and then transform it to Telegram object
     update = telegram.Update.de_json(request.get_json(force=True), bot)
 
@@ -16,8 +18,6 @@ def responde():
 
     # Telegram understands UTF-8, so encode text for unicode compatibility
     text = update.message.text.encode("utf-8").decode()
-    # for debugging purposes only
-    print("got the message: ", text)
 
     # The first time you chat with the bot A.K.A the welcome message
     if text == "/start":
@@ -31,7 +31,16 @@ def responde():
         bot.sendMessage(chat_id=chat_id,
                         text=bot_welcome,
                         reply_to_message_id=msg_id)
-    
+    elif text.startswith("/t"):
+        response = add_thought_to_inbox(text)
+        if response == "OK":
+            bot.sendMessage(chat_id=chat_id,
+                            text="Thought successfully added to inbox",
+                            reply_to_message_id=msg_id)
+        else:
+            bot.sendMessage(chat_id=chat_id,
+                            text="Something went wrong",
+                            reply_to_message_id=msg_id)
     else:
         try:
             # Just sending back the same message to test only
