@@ -36,4 +36,6 @@ def add_thought_to_inbox(thought_text):
     if response.status_code == 200:
         return "OK"
     else:
+        print(response.status_code)
+        print(response.content)
         return "ERROR"
