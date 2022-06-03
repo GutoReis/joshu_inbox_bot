@@ -1,3 +1,4 @@
+import json
 import os
 
 import requests
@@ -31,7 +32,7 @@ def add_thought_to_inbox(thought_text):
             }
     response = requests.post(url=NOTION_URL,
                              headers=header,
-                             data=body)
+                             data=json.dumps(body))
     
     if response.status_code == 200:
         return "OK"
