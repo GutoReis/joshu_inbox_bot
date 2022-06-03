@@ -39,7 +39,7 @@ def response():
                             reply_to_message_id=msg_id)
         else:
             bot.sendMessage(chat_id=chat_id,
-                            text="Something went wrong",
+                            text="Couldn't insert the Thought on Inbox",
                             reply_to_message_id=msg_id)
     else:
         try:
